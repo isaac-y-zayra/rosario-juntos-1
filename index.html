@@ -1,0 +1,848 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Rosario de dos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500;1,600&family=Figtree:wght@400;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap">
+<style>
+/* Concepto: columna nocturna de oración a dos voces; hilo de cuentas partidas por la mitad, una mitad cada quien; el avance viaja entre los dos celulares como un mensaje corto con código. */
+:root{
+  --bg:#f3eff6; --surface:#ffffff; --surface2:#ebe5f3; --ink:#231f3a; --mute:#5f597d; --line:#d9d1e6;
+  --me:#96620f; --her:#b03a60; --both:#5a4fb0; --on-accent:#ffffff; --off:#cdc4dd; --shadow:0 12px 32px rgba(35,31,58,.14);
+  --display:"Cormorant Garamond",Georgia,serif; --text:"Newsreader",Georgia,serif; --ui:"Figtree",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12142a; --surface:#1b1e3a; --surface2:#252954; --ink:#f1ecf7; --mute:#a9a6c8; --line:#2f3463;
+  --me:#f0b95a; --her:#f08fae; --both:#b3a8ff; --on-accent:#1d1402; --off:#363b6b; --shadow:0 12px 32px rgba(0,0,0,.45); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12142a; --surface:#1b1e3a; --surface2:#252954; --ink:#f1ecf7; --mute:#a9a6c8; --line:#2f3463;
+  --me:#f0b95a; --her:#f08fae; --both:#b3a8ff; --on-accent:#1d1402; --off:#363b6b; --shadow:0 12px 32px rgba(0,0,0,.45); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px 130px}
+button,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--me);outline-offset:2px}
+.wrap{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:600}
+h1{font-family:var(--display);font-style:italic;font-weight:600;font-size:40px;line-height:1.05;margin:4px 0 0;text-wrap:balance}
+.iconbtn{min-width:44px;min-height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;flex:none}
+.iconbtn svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.8;stroke-linecap:round}
+
+.five{display:flex;justify-content:space-between;gap:4px;padding:14px 12px;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.node{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;flex:1}
+.node i{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--line);display:grid;place-items:center;font-style:normal;font-weight:700;font-size:13px;color:var(--mute);position:relative;overflow:hidden}
+.node i::before{content:"";position:absolute;inset:0;background:var(--me);opacity:var(--f,0)}
+.node i span{position:relative}
+.node.now i{border-color:var(--me)}
+.node.full i{color:var(--on-accent);border-color:var(--me)}
+.node small{font-size:10px;white-space:nowrap;color:var(--mute);letter-spacing:.04em}
+
+.mini{display:flex;align-items:center;gap:18px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.mini{align-items:stretch}.mini>svg{width:min(46%,160px);height:auto;flex:none;align-self:flex-start}
+.art{position:relative;flex:1;min-height:56px;margin-top:10px;border-radius:14px;background:var(--surface2)}
+.art svg{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px)}
+.art .k{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.art .p{fill:var(--both);fill-opacity:.25;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.art .s{fill:var(--both)}.art .g{fill:var(--me)}.art .c{fill:var(--ink)}.art .d{fill:var(--ink);fill-opacity:.2}
+.art .w{fill:none;stroke:var(--both);stroke-width:3;stroke-linecap:round}
+.mini .ring{stroke-width:1.5}
+.hl{fill:none;stroke:var(--off);stroke-width:3.4}.hl.me{stroke:var(--me)}.hl.her{stroke:var(--her)}.hl.both{stroke:var(--both)}
+.mi{min-width:0;flex:1;display:flex;flex-direction:column}
+.pct{font-family:var(--display);font-style:italic;font-weight:600;font-size:40px;line-height:1;margin:0}
+.pct small{font-size:24px}
+.lbl{margin:2px 0 6px;font-size:13px;color:var(--mute)}
+.now{margin:0 0 6px;font-weight:600;font-size:15px}
+.key{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--mute)}
+.key span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:6px}
+
+.livepill{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-size:13px;font-weight:600;color:var(--mute);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.livepill::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--off)}
+.livepill.on::before{background:var(--her);animation:glow2 2s ease-in-out infinite}
+.livepill.on.peer::before{background:var(--both)}
+@keyframes glow2{50%{opacity:.35}}
+.chk{display:flex;gap:12px;align-items:flex-start;font-size:15px;margin-top:12px}.sheet .chk input{width:24px;min-height:24px;height:24px;margin:2px 0 0;flex:none}
+.more{margin-top:10px}.more>summary{min-height:44px}
+.roomcode{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:22px;letter-spacing:.08em;font-weight:700;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;user-select:all;overflow-wrap:anywhere}
+.sheet input{width:100%;min-height:48px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:0 14px;font-size:16px;margin:8px 0}
+.people{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.person{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px 14px;min-width:0}
+.person.turn{border-color:var(--c)}
+.person b{display:flex;align-items:center;gap:8px;font-size:15px}
+.person b::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.person p{margin:4px 0 0;font-size:13px;color:var(--mute);overflow-wrap:anywhere}
+.person.turn p{color:var(--ink);font-weight:600}
+.me{--c:var(--me)} .her{--c:var(--her)}
+
+.card{background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:20px 18px;box-shadow:var(--shadow)}
+.card.mine{border-color:var(--me)} .card.hers{border-color:var(--her)} .card.joint{border-color:var(--both)}
+.strand{width:100%;height:auto;display:block}
+.strand .cord{fill:none;stroke:var(--off);stroke-width:2}
+.hb{fill:var(--off)}
+.hb.me{fill:var(--me)} .hb.her{fill:var(--her)} .hb.both{fill:var(--both)}
+.ring{fill:none;stroke:var(--c);stroke-width:2.5;transform-box:fill-box;transform-origin:center;animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.9);opacity:0}}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--mute);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:6px}
+
+.mys{font-family:var(--display);font-style:italic;font-weight:600;font-size:27px;line-height:1.1;margin:14px 0 2px;text-wrap:balance}
+.step{font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--c,var(--mute));margin:0 0 10px}
+.prayer{white-space:pre-line;font-family:var(--text);font-size:21px;line-height:1.6;margin:0;max-width:60ch}
+.prayer + .prayer{margin-top:12px;color:var(--mute);font-size:17px}
+.prayer.eq + .prayer.eq{color:var(--ink);font-size:21px}
+.role[disabled]{opacity:.45;cursor:default}
+#intent{margin:10px 0 0;font-family:var(--text);font-size:18px}
+.big{font-family:var(--display);font-style:italic;font-weight:600;font-size:30px;line-height:1.1;margin:0 0 8px;text-wrap:balance}
+.undo{margin-top:14px;background:none;border:none;color:var(--mute);font-size:14px;text-decoration:underline;min-height:44px;padding:0 4px}
+
+.inbox{display:flex;flex-direction:column;gap:10px}
+.inbox h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0}
+.inbox p{margin:0;font-size:14px;color:var(--mute)}
+textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px;font-size:16px;resize:vertical;min-height:84px}
+.msg{font-size:15px}
+.btn{min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-weight:600;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:var(--ink)}
+.btn.main{background:var(--me);border-color:var(--me);color:var(--on-accent)}
+.btn.warn{border-color:var(--her);color:var(--her)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.note{font-size:14px;background:var(--surface2);border-radius:12px;padding:10px 14px;margin:0}
+details{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:0 16px}
+summary{min-height:48px;display:flex;align-items:center;cursor:pointer;font-weight:600;font-size:15px}
+details p{margin:0 0 14px;font-family:var(--text);font-size:17px;color:var(--mute)}
+
+.bar{position:fixed;left:0;right:0;bottom:0;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:linear-gradient(to top,var(--bg) 70%,transparent)}
+.go{display:flex;align-items:center;justify-content:center;gap:14px;width:100%;max-width:460px;margin:0 auto;min-height:64px;border:none;border-radius:32px;background:var(--me);color:var(--on-accent);font-weight:700;font-size:18px;box-shadow:var(--shadow);padding:0 20px;text-align:left}
+.go .pearl{width:34px;height:34px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#fff9,transparent 48%),var(--on-accent);opacity:.9}
+.go:active{transform:scale(.98)}
+.go[disabled]{background:var(--surface2);color:var(--mute);box-shadow:none;cursor:default}
+.go[disabled] .pearl{background:var(--off);opacity:1}
+.go.pulse{animation:nudge 2.2s ease-in-out infinite}
+@keyframes nudge{50%{box-shadow:0 0 0 10px color-mix(in srgb,var(--me) 22%,transparent)}}
+
+.toast{position:fixed;left:0;right:0;top:calc(10px + env(safe-area-inset-top,0px));padding:0 max(14px,env(safe-area-inset-right,0px)) 0 max(14px,env(safe-area-inset-left,0px));z-index:30;pointer-events:none}
+.tcard{pointer-events:auto;display:flex;gap:14px;align-items:flex-start;width:100%;max-width:440px;margin:0 auto;
+  background:var(--surface);border:2px solid var(--c);border-radius:22px;padding:14px 16px;box-shadow:var(--shadow);animation:drop .5s cubic-bezier(.2,1.2,.4,1)}
+.tcard .orb{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff8,transparent 45%),var(--c);flex:none;box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 25%,transparent);animation:glow 1.6s ease-in-out infinite}
+.tcard .tb{min-width:0;flex:1;display:flex;flex-direction:column;gap:6px}
+.tcard b{display:block;font-size:16px;line-height:1.25}
+.tcard span{display:block;font-size:13px;color:var(--mute)}
+.tcard em{display:block;font-style:normal;font-weight:700;font-size:14px;color:var(--me)}
+.tcard textarea{min-height:0;font-size:14px;padding:8px 10px}
+.tcard .x{min-width:44px;min-height:44px;margin:-8px -10px 0 0;background:none;border:none;font-size:22px;line-height:1;color:var(--mute)}
+.toast.out .tcard{animation:lift .3s ease-in forwards}
+@keyframes drop{from{transform:translateY(-140%);opacity:0}to{transform:none;opacity:1}}
+@keyframes lift{to{transform:translateY(-140%);opacity:0}}
+@keyframes glow{50%{box-shadow:0 0 0 12px color-mix(in srgb,var(--c) 8%,transparent)}}
+
+.sheet{position:fixed;inset:0;z-index:40;background:rgba(10,10,30,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet>div{background:var(--bg);width:100%;max-width:520px;max-height:90%;overflow:auto;border-radius:24px 24px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px}
+.sheet h2{font-family:var(--display);font-style:italic;font-size:30px;margin:0;text-wrap:balance}
+.sheet h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
+.sheet p{margin:0;color:var(--mute);font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:600}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.role{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px 16px;border-radius:18px;border:2px solid var(--line);background:var(--surface);min-height:72px}
+.role b{font-size:17px}
+.role span{font-size:14px;color:var(--mute)}
+.role[aria-pressed="true"]{border-color:var(--me)}
+.hint{font-size:13px;color:var(--mute);margin:8px 0 0}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:360px){h1{font-size:34px}.people{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow" id="eyebrow">Rosario de dos</div>
+      <h1 id="title">Misterios</h1>
+    </div>
+    <button class="iconbtn" data-act="sheet" aria-label="Ajustes del rosario">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+    </button>
+  </header>
+
+  <div class="livepill" id="live" hidden></div>
+  <section class="mini" id="five" aria-label="Avance de todo el rosario"></section>
+  <div class="people" id="people"></div>
+  <div id="main"></div>
+  <details id="intdet" hidden><summary>Intenciones de este rosario</summary><p id="inttxt" style="white-space:pre-line"></p></details>
+
+  <section class="card inbox" id="inboxcard" aria-labelledby="inh">
+    <h2 id="inh">Avance de tu pareja</h2>
+    <p>Si no hay conexión en vivo, pega aquí el mensaje de tu pareja y tu rosario se pone al día.</p>
+    <textarea id="inbox" rows="3" placeholder="Pega aquí el mensaje de tu pareja" aria-label="Mensaje de tu pareja"></textarea>
+    <div class="btns"><button class="btn main" data-act="apply">Actualizar avance</button></div>
+    <p class="note" id="inmsg" hidden></p>
+  </section>
+
+  <details>
+    <summary>Cómo se turnan</summary>
+    <p>Se alternan desde el principio hasta el final, una parte cada quien. El Padre Nuestro y cada Ave María se rezan en dos mitades. La Señal de la cruz, el acto de contrición, el Credo, los Gloria, las jaculatorias, la Salve y las oraciones finales las rezan completas los dos; cada quien toca su bolita cuando termine.</p>
+  </details>
+  <button class="btn warn" id="reset2" data-act="reset">Empezar de nuevo los dos</button>
+</div>
+
+<div class="bar"><button class="go" id="go" data-act="go" disabled><span class="pearl" aria-hidden="true"></span><span id="golabel">Cargando…</span></button></div>
+
+<div class="toast" id="toast" aria-live="polite"></div>
+
+<div class="sheet" id="roles" hidden>
+  <div role="dialog" aria-modal="true" aria-label="Elige tu parte">
+    <h2 id="roleh">¿Quién eres y quién empieza?</h2>
+    <div id="rolebox"></div>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" hidden>
+  <div role="dialog" aria-modal="true" aria-label="Ajustes del rosario">
+    <h2>Ajustes</h2>
+    <section><h3>Misterios de hoy</h3><div class="chips" id="tipos"></div>
+      <p class="hint">Los dos deben tener los mismos. El mensaje de avance también los ajusta.</p></section>
+    <section><h3>Sala</h3>
+      <p id="roomstat"></p>
+      <div class="roomcode" id="roomcode" hidden></div>
+      <div class="btns" id="roomtools" hidden><button class="btn" data-act="copylink">Copiar enlace</button><a class="btn" id="roomwa" target="_blank" rel="noopener" href="#">Mandar por WhatsApp</a></div>
+      <details class="more"><summary>Usar otra sala</summary>
+      <input id="roomin" type="text" inputmode="text" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="Código o enlace de la sala" aria-label="Código o enlace de la sala">
+      <div class="btns"><button class="btn main" data-act="join">Unirme</button><button class="btn" data-act="newroom">Crear sala nueva</button></div>
+      <p class="hint">Si cambian de sala, los dos deben suscribirse otra vez en ntfy al tema nuevo.</p>
+      </details>
+      <p class="hint">La sala es secreta y no está escrita en el archivo, así que pueden subir la página a GitHub sin que nadie más la vea. Compartan el enlace de la sala solo entre ustedes.</p></section>
+    <section><h3>Avisos en el celular</h3>
+      <p>Cada movimiento de tu pareja te llega como notificación, tengas o no la página abierta. Instala la app ntfy (Android o iPhone) y suscríbete a este tema:</p>
+      <div class="roomcode" id="avisocode"></div>
+      <div class="btns"><button class="btn" data-act="copyaviso">Copiar tema</button><a class="btn" id="avisolink" target="_blank" rel="noopener" href="https://ntfy.sh/">Abrir ntfy</a></div>
+      <p class="hint">Isaac y Zayra tienen temas distintos; cada quien se suscribe al suyo. Al tocar la notificación se abre el rosario ya al día.</p></section>
+    <section><h3>Quién eres</h3><div class="chips" id="whoset"></div></section>
+    <section><h3>Tu parte</h3><div class="chips" id="roleset"></div></section>
+    <section><h3>Tu código de avance</h3><p id="mycode"></p>
+      <p class="hint">Si se perdió algún mensaje, pega este código en la página de tu pareja.</p></section>
+    <button class="btn warn" id="reset" data-act="reset">Empezar de nuevo los dos</button>
+    <button class="btn" data-act="close">Listo</button>
+  </div>
+</div>
+
+<script>
+(function(){
+var ORD=['1.º','2.º','3.º','4.º','5.º'],KEY='rosario-de-dos-v4';
+var TIPOS={
+  gozosos:['La Anunciación del Ángel a María','La Visitación de María a Santa Isabel','El Nacimiento de Jesús en Belén','La Presentación de Jesús en el Templo','El Niño Jesús perdido y hallado en el Templo'],
+  luminosos:['El Bautismo de Jesús en el Jordán','Las bodas de Caná','El anuncio del Reino de Dios','La Transfiguración','La institución de la Eucaristía'],
+  dolorosos:['La oración de Jesús en el huerto','La flagelación del Señor','La coronación de espinas','Jesús con la cruz a cuestas','La crucifixión y muerte de Jesús'],
+  gloriosos:['La Resurrección del Señor','La Ascensión del Señor al cielo','La venida del Espíritu Santo','La Asunción de María al cielo','La coronación de María como Reina']
+};
+var TORDER=['gozosos','luminosos','dolorosos','gloriosos'];
+var PRAY={
+  cruz:'Por la señal de la Santa Cruz, de nuestros enemigos líbranos, Señor, Dios nuestro. En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.',
+  abre:'Abre, Señor, mis labios,\ny mi boca proclamará tu alabanza.',
+  contri1:'Señor mío, Jesucristo, Dios y Hombre verdadero, Creador, Padre y Redentor mío, por ser tú quién eres y porque te amo sobre todas las cosas, me pesa de todo corazón haberte ofendido; propongo firmemente nunca más pecar, apartarme de todas las ocasiones de ofenderte, confesarme y cumplir la penitencia que me fuera impuesta.',
+  contri2:'Ofrezco, Señor, mi vida, obras y trabajos, en satisfacción de todos mis pecados, y así como lo suplico, así confío en tu bondad y misericordia infinita, que los perdonarás, por los méritos de tu preciosísima sangre, pasión y muerte, y me darás gracia para enmendarme y perseverar en tu santo amor y servicio, hasta el fin de mi vida. Amén.',
+  credo:'Creo en Dios, Padre todopoderoso, Creador del cielo y de la tierra. Creo en Jesucristo, su único Hijo, nuestro Señor, que fue concebido por obra y gracia del Espíritu Santo, nació de santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios, Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos. Creo en el Espíritu Santo, en la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.',
+  pn1:'Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo.',
+  pn2:'Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.',
+  ave1:'Dios te salve, María, llena eres de gracia, el Señor es contigo. Bendita tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.',
+  ave2:'Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.',
+  gloria:'Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.',
+  jac1:'María, madre de gracia y madre de misericordia.\nEn la vida y en la muerte ampáranos gran Señora.',
+  jac2:'Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu Divina Misericordia. Amén.',
+  jac3:'Sagrado Corazón de Jesús,\nen vos confío.',
+  jac4:'Oh María, sin pecado concebida,\nrogad por nosotros que recurrimos a vos.',
+  fe1:'Dios te salve, María Santísima, Hija de Dios Padre, Virgen purísima antes del parto, en tus manos encomendamos nuestra fe para que la ilumines, llena eres de gracia, el Señor es contigo. Bendita tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.',
+  fe2:'Dios te salve, María Santísima, Madre de Dios Hijo, Virgen purísima en el parto, en tus manos encomendamos nuestra esperanza para que la alientes, llena eres de gracia, el Señor es contigo. Bendita tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.',
+  fe3:'Dios te salve, María Santísima, Esposa de Dios Espíritu Santo, Virgen purísima después del parto, en tus manos encomendamos nuestra caridad para que la inflames, llena eres de gracia, el Señor es contigo. Bendita tú eres entre todas las mujeres y bendito es el fruto de tu vientre, Jesús.',
+  fe4:'Dios te salve, María Santísima, Templo, trono y Sagrario de la Santísima Trinidad, Virgen concebida sin pecado original.',
+  salve:'Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra,\nDios te salve. A ti llamamos los desterrados hijos de Eva, a ti suspiramos, gimiendo y llorando, en este valle de lágrimas.\nEa, pues, Señora abogada nuestra, vuelve a nosotros tus ojos misericordiosos,\ny después de este destierro muéstranos a Jesús,\nfruto bendito de tu vientre.\n¡Oh clemente, oh piadosa,\noh dulce siempre Virgen María! Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las divinas gracias y promesas de nuestro Señor Jesucristo. Amén.',
+  amparo:'Bajo tu amparo nos acogemos, santa Madre de Dios; no desprecies las oraciones que te dirigimos en nuestras necesidades, antes bien líbranos de todo peligro, ¡oh Virgen gloriosa y bendita!',
+  ruega:'Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las divinas gracias y promesas de nuestro Señor Jesucristo. Amén.',
+  oracion:'Te rogamos nos concedas,\nSeñor Dios nuestro,\ngozar de continua salud de alma y cuerpo,\ny por la gloriosa intercesión\nde la bienaventurada siempre Virgen María,\nvernos libres de las tristezas de la vida presente\ny disfrutar de las alegrías eternas.\nPor Cristo nuestro Señor.\nAmén.',
+  purisima:'Ave María Purísima,\nsin pecado original concebida.'
+};
+var RESP='Después de cada invocación, los dos responden: Ruega por nosotros.';
+var LETANIAS=[
+  ['Señor, ten piedad.\nCristo, ten piedad.\nSeñor, ten piedad.\nCristo, óyenos.\nCristo, escúchanos.'],
+  ['Dios, Padre celestial, ten piedad de nosotros.\nDios, Hijo, Redentor del mundo, ten piedad de nosotros.\nDios, Espíritu Santo, ten piedad de nosotros.\nSantísima Trinidad, un solo Dios, ten piedad de nosotros.'],
+  ['Santa María\nSanta Madre de Dios\nSanta Virgen de las Vírgenes\nMadre de Cristo\nMadre de la Iglesia\nMadre de la misericordia\nMadre de la divina gracia\nMadre de la esperanza\nMadre purísima\nMadre castísima',RESP],
+  ['Madre siempre virgen\nMadre inmaculada\nMadre amable\nMadre admirable\nMadre del buen consejo\nMadre del Creador\nMadre del Salvador',RESP],
+  ['Virgen prudentísima\nVirgen digna de veneración\nVirgen digna de alabanza\nVirgen poderosa\nVirgen clemente\nVirgen fiel',RESP],
+  ['Espejo de justicia\nTrono de la sabiduría\nCausa de nuestra alegría\nVaso espiritual\nVaso digno de honor\nVaso de insigne devoción\nRosa mística',RESP],
+  ['Torre de David\nTorre de marfil\nCasa de oro\nArca de la Alianza\nPuerta del cielo\nEstrella de la mañana',RESP],
+  ['Salud de los enfermos\nRefugio de los pecadores\nConsuelo de los migrantes\nConsoladora de los afligidos\nAuxilio de los cristianos',RESP],
+  ['Reina de los Ángeles\nReina de los Patriarcas\nReina de los Profetas\nReina de los Apóstoles\nReina de los Mártires\nReina de los Confesores\nReina de las Vírgenes\nReina de todos los Santos',RESP],
+  ['Reina concebida sin pecado original\nReina asunta a los Cielos\nReina del Santísimo Rosario\nReina de la familia\nReina de la paz',RESP],
+  ['Cordero de Dios, que quitas el pecado del mundo, perdónanos, Señor.\nCordero de Dios, que quitas el pecado del mundo, escúchanos, Señor.\nCordero de Dios, que quitas el pecado del mundo, ten misericordia de nosotros.']
+];
+var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function safe(fn){try{return fn()}catch(e){return null}}
+
+/* ---------- todas las partes del rosario, en orden ----------
+   o = 'a' (quien empieza el Padre Nuestro), 'b' (la otra persona) o 'x' (las dos personas, cada una completo) */
+var PARTS=[],SECS=[];
+(function(){
+  function add(sec,d,o,title,short,body,eq,kind){PARTS.push({sec:sec,d:d,o:o,title:title,short:short,body:body,eq:!!eq,kind:kind||''})}
+  function aves(count,sec,d,tags){
+    for(var a=1;a<=count;a++){
+      var tg=tags?' · '+tags[a-1][0]:'';
+      add(sec,d,'a','Dios te salve · Ave María '+a+' de '+count+tg,'el «Dios te salve» del Ave '+a,[tags?tags[a-1][1]:PRAY.ave1]);
+      add(sec,d,'b','Santa María · Ave María '+a+' de '+count+tg,'el «Santa María» del Ave '+a,[PRAY.ave2]);
+    }
+  }
+  function section(key,d,big,fn){var start=PARTS.length;fn();SECS.push({key:key,d:d,start:start,len:PARTS.length-start,big:big})}
+  function pn(sec,d,pre){
+    add(sec,d,'a',pre+'Padre Nuestro · primera parte','la primera parte del Padre Nuestro',[PRAY.pn1]);
+    add(sec,d,'b',pre+'Padre Nuestro · segunda parte','la segunda parte del Padre Nuestro',[PRAY.pn2]);
+  }
+  section('open',-1,[0,2,3],function(){
+    add('open',-1,'x','Señal de la cruz','la Señal de la cruz',[PRAY.cruz,PRAY.abre],true);
+    add('open',-1,'x','Acto de contrición','el acto de contrición',[PRAY.contri1,PRAY.contri2],true);
+    add('open',-1,'x','Credo','el Credo',[PRAY.credo]);
+    add('open',-1,'x','Ofrecemos este rosario por…','la intención',[],false,'intent');
+    pn('open',-1,'');
+    add('open',-1,'x','Gloria','el Gloria',[PRAY.gloria]);
+  });
+  for(var d=0;d<5;d++)(function(d){section('dec',d,[0,11],function(){
+    pn('dec',d,'');aves(10,'dec',d,null);
+    add('dec',d,'x','Gloria','el Gloria',[PRAY.gloria]);
+    add('dec',d,'x','Jaculatorias','las jaculatorias',[PRAY.jac1,PRAY.jac2,PRAY.jac3,PRAY.jac4],true);
+  })})(d);
+  section('fe',-1,[3],function(){
+    aves(3,'fe',-1,[['por la fe',PRAY.fe1],['por la esperanza',PRAY.fe2],['por la caridad',PRAY.fe3]]);
+    add('fe',-1,'x','Dios te salve · Templo de la Santísima Trinidad','el «Dios te salve» final',[PRAY.fe4]);
+  });
+  section('close',-1,[0,5,10],function(){
+    add('close',-1,'x','Salve','la Salve',[PRAY.salve]);
+    LETANIAS.forEach(function(b,i){add('close',-1,i%2===0?'b':'a','Letanías · '+(i+1)+' de '+LETANIAS.length,'las Letanías ('+(i+1)+' de '+LETANIAS.length+')',b)});
+    add('close',-1,'x','Bajo tu amparo','el «Bajo tu amparo»',[PRAY.amparo]);
+    add('close',-1,'x','Ruega por nosotros','el «Ruega por nosotros»',[PRAY.ruega]);
+    pn('close',-1,'Intenciones del Papa · ');
+    add('close',-1,'a','Intenciones del Papa · Dios te salve','el «Dios te salve» por el Papa',[PRAY.ave1]);
+    add('close',-1,'b','Intenciones del Papa · Santa María','el «Santa María» por el Papa',[PRAY.ave2]);
+    add('close',-1,'x','Intenciones del Papa · Gloria','el Gloria por el Papa',[PRAY.gloria]);
+    add('close',-1,'x','Oración final','la oración final',[PRAY.oracion]);
+    add('close',-1,'x','Ave María Purísima','el «Ave María Purísima»',[PRAY.purisima]);
+    add('close',-1,'x','Señal de la cruz','la Señal de la cruz final',[PRAY.cruz]);
+  });
+})();
+var TOTAL=PARTS.length;
+
+function todayTipo(){return [3,0,2,3,1,2,0][new Date().getDay()]}
+/* n = partes completas, t = misterios, role = 'a' | 'b', me / her = ya rezó la parte conjunta en curso */
+var NAME={i:'Isaac',z:'Zayra'},S={n:0,t:todayTipo(),role:null,me:0,her:0,who:null,e:0,int:{i:null,z:null}},draftInt='',toastTimer=null,confirmReset=false,pendingCode=null;
+(function(){var r=safe(function(){return JSON.parse(localStorage.getItem(KEY)||'null')});
+  if(r&&typeof r==='object'){if(r.n>=0&&r.n<=TOTAL)S.n=r.n|0;if(r.t>=0&&r.t<4)S.t=r.t|0;if(r.role==='a'||r.role==='b')S.role=r.role;S.me=r.me?1:0;S.her=r.her?1:0;if(r.who==='i'||r.who==='z')S.who=r.who;S.e=+r.e||0;if(r.int&&typeof r.int==='object'){['i','z'].forEach(function(w){if(typeof r.int[w]==='string')S.int[w]=r.int[w]})}}})();
+function save(){safe(function(){localStorage.setItem(KEY,JSON.stringify(S))})}
+
+function tipoName(){return TORDER[S.t]}
+function ownerOf(i){return PARTS[i].o}
+function herWho(){return S.who?(S.who==='i'?'z':'i'):null}
+function herName(){return S.who?NAME[herWho()]:'Tu pareja'}
+function secName(s){return s.key==='open'?'Para empezar':s.key==='fe'?'Fe, esperanza y caridad':s.key==='close'?'Para terminar':ORD[s.d]+' misterio'}
+function secWhere(s){return s.key==='dec'?ORD[s.d]+' misterio · '+TIPOS[tipoName()][s.d]:secName(s)}
+function doReset(e){S.n=0;S.me=0;S.her=0;S.role=null;S.int={i:null,z:null};S.e=e;draftInt='';save();render();$('sheet').hidden=true}
+function code(){return S.n+'-'+S.t+'-'+(S.me?1:0)}
+function secOf(i){for(var k=0;k<SECS.length;k++)if(i>=SECS[k].start&&i<SECS[k].start+SECS[k].len)return SECS[k];return SECS[SECS.length-1]}
+function secCount(s){return Math.max(0,Math.min(s.len,S.n-s.start))}
+function myTurn(i){var o=ownerOf(i);return o==='x'?!S.me:o===S.role}
+function herTurn(i){var o=ownerOf(i);return o==='x'?!S.her:o!==S.role}
+function advance(){S.n++;S.me=0;S.her=0}
+
+/* ---------- dibujo ---------- */
+var CROSS='<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 3v18M6.5 9h11" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>';
+function strand(s,nx){
+  var W=340,H=126,nb=Math.ceil(s.len/2),pts=[],svg='',path='',k;
+  for(k=0;k<nb;k++){var t=nb>1?k/(nb-1):.5;pts.push([20+t*(W-40),20+78*(1-Math.pow(2*t-1,2))])}
+  pts.forEach(function(p,j){path+=(j?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)});
+  svg+='<path class="cord" d="'+path+'"/>';
+  function cls(idx){
+    if(idx>=S.n)return 'hb';
+    var o=ownerOf(idx);return 'hb '+(o==='x'?'both':(o===S.role?'me':'her'));
+  }
+  pts.forEach(function(p,j){
+    var x=p[0],y=p[1],r=s.big.indexOf(j)>=0?11.5:8.5,l=s.start+2*j,rr=l+1,xs=x.toFixed(1);
+    if(rr>=s.start+s.len){svg+='<circle class="'+cls(l)+'" cx="'+xs+'" cy="'+y.toFixed(1)+'" r="'+r+'"/>';return}
+    svg+='<path class="'+cls(l)+'" d="M'+xs+' '+(y-r).toFixed(1)+'A'+r+' '+r+' 0 0 0 '+xs+' '+(y+r).toFixed(1)+'Z"/>';
+    svg+='<path class="'+cls(rr)+'" d="M'+xs+' '+(y-r).toFixed(1)+'A'+r+' '+r+' 0 0 1 '+xs+' '+(y+r).toFixed(1)+'Z"/>';
+    svg+='<line x1="'+xs+'" y1="'+(y-r).toFixed(1)+'" x2="'+xs+'" y2="'+(y+r).toFixed(1)+'" stroke="var(--surface)" stroke-width="1.2"/>';
+  });
+  if(nx<TOTAL&&secOf(nx)===s){
+    var rel=nx-s.start,bk=Math.floor(rel/2),side=rel%2,p2=pts[bk],big=s.big.indexOf(bk)>=0;
+    var cx=p2[0];
+    svg+='<circle class="ring" style="--c:'+(myTurn(nx)?'var(--me)':'var(--her)')+'" cx="'+cx.toFixed(1)+'" cy="'+p2[1].toFixed(1)+'" r="'+(big?15:12.5)+'"/>';
+  }
+  return '<svg class="strand" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Parte del rosario en curso">'+svg+'</svg>';
+}
+
+
+/* ---------- dibujos de los misterios ---------- */
+function star(cx,cy,R,r,cls){var p=[],i,a,q;for(i=0;i<10;i++){a=-Math.PI/2+i*Math.PI/5;q=i%2?r:R;p.push((cx+q*Math.cos(a)).toFixed(1)+','+(cy+q*Math.sin(a)).toFixed(1))}return '<polygon class="'+(cls||'s')+'" points="'+p.join(' ')+'"/>'}
+function rays(cx,cy,r1,r2,n,off){var o='',i,a;for(i=0;i<n;i++){a=(off||0)+i*2*Math.PI/n;o+='<line class="k" x1="'+(cx+r1*Math.cos(a)).toFixed(1)+'" y1="'+(cy+r1*Math.sin(a)).toFixed(1)+'" x2="'+(cx+r2*Math.cos(a)).toFixed(1)+'" y2="'+(cy+r2*Math.sin(a)).toFixed(1)+'"/>'}return o}
+var DOVE='<path class="p" d="M18 52C26 44 38 44 46 50C58 44 72 46 80 56C70 56 62 60 54 62C44 68 30 66 18 52Z"/><path class="p" d="M46 50C44 34 52 22 68 16C66 28 62 40 62 52Z"/><path class="p" d="M76 54L94 50L90 62L72 60Z"/><path class="k" d="M16 51L8 54L16 56"/><circle class="s" cx="24" cy="50" r="1.8"/>';
+function flame(x,y,s,c){return '<path class="'+(c||'g')+'" transform="translate('+x+' '+y+') scale('+s+')" d="M0 0C-12 -6 -12 -22 0 -42C2 -30 14 -24 10 -10C8 -4 4 0 0 0Z"/>'}
+var CLOUD='<path class="p" d="M22 78C8 78 8 60 22 58C22 44 44 42 50 54C60 46 76 54 72 66C88 66 92 80 76 80Z"/>';
+function crown(x,y,sc){return '<g transform="translate('+x+' '+y+') scale('+sc+')"><path class="p" d="M18 74L14 34L36 52L50 24L64 52L86 34L82 74Z"/><path class="k" d="M18 82H82"/><circle class="s" cx="14" cy="32" r="4.5"/><circle class="s" cx="50" cy="22" r="4.5"/><circle class="s" cx="86" cy="32" r="4.5"/></g>'}
+var CROSSB='<rect class="p" x="44" y="14" width="12" height="74" rx="2"/><rect class="p" x="24" y="32" width="52" height="12" rx="2"/>';
+var ART={
+ g0:'<path class="k" d="M50 92C50 76 50 62 50 50"/><path class="p" d="M50 82C38 80 30 72 28 62C40 64 48 70 50 82Z"/><path class="p" d="M50 50C42 38 44 24 50 14C56 24 58 38 50 50Z"/><path class="p" d="M50 50C38 46 28 36 26 26C38 28 48 36 50 50Z"/><path class="p" d="M50 50C62 46 72 36 74 26C62 28 52 36 50 50Z"/>'+star(84,16,8,3.4)+rays(20,22,6,13,5,0.2),
+ g1:'<circle class="p" cx="34" cy="42" r="9"/><circle class="p" cx="66" cy="42" r="9"/><path class="p" d="M34 52C20 64 18 78 16 92H54C52 76 48 62 34 52Z"/><path class="p" d="M66 52C80 64 82 78 84 92H46C48 76 52 62 66 52Z"/><path class="g" d="M50 24C46 17 36 18 36 25C36 32 46 36 50 42C54 36 64 32 64 25C64 18 54 17 50 24Z"/>',
+ g2:star(50,24,11,4.6)+rays(50,24,15,21,8,0.2)+'<path class="p" d="M20 60H80L72 86H28Z"/><path class="k" d="M30 86L24 95M70 86L76 95"/><path class="k" d="M24 60C34 52 42 58 50 54C58 58 66 52 76 60"/><circle class="p" cx="50" cy="52" r="7"/>',
+ g3:'<path class="p" d="M14 38L50 14L86 38Z"/><path class="k" d="M14 38H86M24 44V82M42 44V82M58 44V82M76 44V82M12 86H88M12 93H88"/>'+star(50,29,5,2.2),
+ g4:'<path class="p" d="M50 40C38 32 24 32 12 36V80C24 76 38 76 50 84C62 76 76 76 88 80V36C76 32 62 32 50 40Z"/><path class="k" d="M50 40V84"/><circle class="g" cx="50" cy="18" r="9"/>'+rays(50,18,13,19,8,0),
+ l0:'<g transform="translate(14 -4) scale(.72)">'+DOVE+'</g><path class="k" stroke-dasharray="3 5" d="M34 56L30 74M50 58V76M66 56L70 74"/><path class="w" d="M6 84C16 78 26 90 36 84S56 78 66 84S86 90 96 84"/><path class="w" d="M6 94C16 88 26 100 36 94S56 88 66 94S86 100 96 94"/>',
+ l1:'<path class="p" d="M38 20H62V28C74 34 76 50 74 64C72 80 62 88 50 88C38 88 28 80 26 64C24 50 26 34 38 28Z"/><path class="k" d="M34 20H66M38 32C26 30 22 42 28 50M62 32C74 30 78 42 72 50"/><path class="g" d="M50 46C44 58 42 62 50 72C58 62 56 58 50 46Z"/>',
+ l2:crown(0,0,1),
+ l3:'<path class="p" d="M6 90L36 42L52 62L66 48L94 90Z"/><circle class="g" cx="50" cy="24" r="11"/>'+rays(50,24,15,22,10,0),
+ l4:'<path class="p" d="M28 34H72C72 54 62 62 50 62C38 62 28 54 28 34Z"/><path class="k" d="M50 62V80M34 88H66M40 88C40 80 60 80 60 88"/><circle class="g" cx="50" cy="18" r="12"/><path class="k" d="M50 11V25M43 18H57"/>',
+ d0:'<path class="p" d="M42 92C46 76 46 66 44 54H58C56 66 56 76 60 92Z"/><circle class="p" cx="34" cy="38" r="15"/><circle class="p" cx="64" cy="38" r="15"/><circle class="p" cx="49" cy="26" r="16"/><circle class="s" cx="28" cy="44" r="3"/><circle class="s" cx="58" cy="32" r="3"/><circle class="s" cx="72" cy="44" r="3"/><path class="g" d="M90 8A11 11 0 1 0 96 26A9 9 0 1 1 90 8Z"/>',
+ d1:'<path class="p" d="M32 14H68V22H60V78H68V88H32V78H40V22H32Z"/><path class="k" d="M74 28C88 38 86 54 80 64M80 64L74 76M80 64L81 78M80 64L88 74"/><circle class="s" cx="73" cy="27" r="3"/>',
+ d2:'<circle class="k" cx="50" cy="50" r="26" stroke-width="5"/>'+(function(){var o='',i,a;for(i=0;i<16;i++){a=i*Math.PI/8;var r1=i%2?26:24,r2=i%2?18:36;o+='<line class="k" x1="'+(50+r1*Math.cos(a)).toFixed(1)+'" y1="'+(50+r1*Math.sin(a)).toFixed(1)+'" x2="'+(50+r2*Math.cos(a)).toFixed(1)+'" y2="'+(50+r2*Math.sin(a)).toFixed(1)+'"/>'}return o})()+'<circle class="s" cx="50" cy="76" r="3"/><circle class="s" cx="36" cy="30" r="3"/><circle class="s" cx="66" cy="68" r="3"/>',
+ d3:'<g transform="rotate(-22 50 52)">'+CROSSB+'</g><path class="k" d="M10 92H90"/><circle class="s" cx="30" cy="84" r="3"/><circle class="s" cx="44" cy="90" r="3"/>',
+ d4:'<path class="p" d="M4 92C20 84 36 80 50 80C64 80 80 84 96 92Z"/><rect class="c" x="46.5" y="12" width="7" height="68"/><rect class="c" x="33" y="26" width="34" height="7"/><rect class="c" x="16" y="42" width="5" height="38"/><rect class="c" x="9" y="49" width="19" height="5"/><rect class="c" x="79" y="42" width="5" height="38"/><rect class="c" x="72" y="49" width="19" height="5"/>',
+ r0:'<path class="p" d="M14 92V56C14 28 78 28 78 56V92Z"/><path class="d" d="M28 92V62C28 46 64 46 64 62V92Z"/><circle class="p" cx="84" cy="78" r="12"/><circle class="g" cx="46" cy="14" r="8"/>'+rays(46,14,12,19,9,0.3),
+ r1:CLOUD+'<path class="k" d="M50 46V8M38 20L50 8L62 20M30 42L22 26M70 42L78 26"/>',
+ r2:'<g transform="translate(20 0) scale(.6)">'+DOVE+'</g>'+flame(26,96,.9)+flame(50,96,1.1)+flame(74,96,.9),
+ r3:'<path class="g" d="M62 14A36 36 0 1 0 62 86A30 30 0 0 1 62 14Z"/>'+star(78,24,7,3)+star(86,50,5,2.2)+star(76,72,6,2.6)+'<path class="k" d="M82 92V70M74 78L82 70L90 78"/>',
+ r4:(function(){var o='',i,a;for(i=0;i<12;i++){a=i*Math.PI/6-Math.PI/2;o+=star(50+43*Math.cos(a),50+43*Math.sin(a),4.4,1.9)}return o})()+crown(24,28,.52),
+ open:CROSSB+rays(50,50,38,46,12,0.1),
+ fe:'<g transform="translate(-4 28) scale(.5)"><rect class="p" x="44" y="14" width="12" height="74" rx="2"/><rect class="p" x="24" y="32" width="52" height="12" rx="2"/></g><g transform="translate(28 28) scale(.45)"><circle class="k" cx="50" cy="28" r="9"/><path class="k" d="M50 37V84M34 50H66M24 66C30 88 70 88 76 66M24 66L16 72M76 66L84 72"/></g><path class="g" transform="translate(40 32) scale(.9)" d="M50 24C46 17 36 18 36 25C36 32 46 36 50 42C54 36 64 32 64 25C64 18 54 17 50 24Z"/>',
+ close:'<circle class="p" cx="50.0" cy="23.0" r="15"/><circle class="p" cx="68.1" cy="36.1" r="15"/><circle class="p" cx="61.2" cy="57.4" r="15"/><circle class="p" cx="38.8" cy="57.4" r="15"/><circle class="p" cx="31.9" cy="36.1" r="15"/><circle class="p" cx="50" cy="42" r="11"/><path class="k" d="M44 42C44 36 56 36 56 42C56 47 47 47 47 43"/><path class="k" d="M50 68V96"/><path class="p" d="M50 90C40 88 35 82 34 76C44 76 50 82 50 90Z"/><path class="p" d="M50 86C60 84 65 78 66 72C56 72 50 78 50 86Z"/>',
+ done:'<path class="g" d="M50 84C20 62 12 44 12 32C12 20 22 12 32 12C40 12 46 16 50 22C54 16 60 12 68 12C78 12 88 20 88 32C88 44 80 62 50 84Z"/>'+star(78,14,6,2.6)+star(20,70,5,2.2)
+};
+function artKey(){
+  var nx=S.n;if(nx>=TOTAL)return 'done';
+  var s=secOf(nx);if(s.key!=='dec')return s.key;
+  return 'gldr'.charAt(S.t)+s.d;
+}
+function artHtml(){
+  return '<div class="art"><svg viewBox="0 0 100 100" role="img" aria-label="Dibujo del misterio">'+(ART[artKey()]||'')+'</svg></div>';
+}
+
+/* ---------- rosario pequeño con todo el avance ---------- */
+var HEART=null;
+function heartTable(){
+  /* corazón con dos lóbulos circulares, un valle redondeado arriba y dos lados rectos que bajan juntos hasta la medalla */
+  if(HEART)return HEART;
+  var r=44,rho=6,cxo=36,cyo=64,tipY=190,sc=1,raw=[],i,n;
+  var psi=Math.atan2(tipY-cyo,-cxo),dist=Math.hypot(cxo,tipY-cyo),b0=psi-Math.acos(r/dist);
+  var yF=cyo-Math.sqrt((r+rho)*(r+rho)-cxo*cxo),gam=Math.atan2(yF-cyo,-cxo);
+  var phiR=Math.atan2(cyo-yF,cxo),gl0=Math.atan2(yF-cyo,cxo),gl1=Math.PI-b0-2*Math.PI;
+  var tpx=cxo+r*Math.cos(b0),tpy=cyo+r*Math.sin(b0);
+  for(i=0;i<=80;i++)raw.push([tpx*i/80,tipY+(tpy-tipY)*i/80]);                                   /* punta -> lóbulo derecho */
+  for(i=1;i<=240;i++){var a1=b0+(gam-b0)*i/240;raw.push([cxo+r*Math.cos(a1),cyo+r*Math.sin(a1)])} /* lóbulo derecho */
+  for(i=1;i<=24;i++){var a2=phiR+(Math.PI-2*phiR)*i/24;raw.push([rho*Math.cos(a2),yF+rho*Math.sin(a2)])} /* valle */
+  for(i=1;i<=240;i++){var a3=gl0+(gl1-gl0)*i/240;raw.push([-cxo+r*Math.cos(a3),cyo+r*Math.sin(a3)])} /* lóbulo izquierdo */
+  for(i=1;i<=80;i++)raw.push([-tpx+tpx*i/80,tpy+(tipY-tpy)*i/80]);                                 /* lóbulo izquierdo -> punta */
+  var pts=raw.map(function(q){return [100+sc*q[0],10+sc*(q[1]-(cyo-r))]}),cum=[0];
+  n=pts.length-1;
+  for(i=1;i<=n;i++)cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));
+  HEART={pts:pts,cum:cum,total:cum[n],N:n};
+  return HEART;
+}
+function heartAt(fr){
+  var H=heartTable(),d=Math.max(0,Math.min(1,fr))*H.total,i=0;
+  while(i<H.N-1&&H.cum[i+1]<d)i++;
+  var seg=H.cum[i+1]-H.cum[i]||1,u=(d-H.cum[i])/seg,a=H.pts[i],b=H.pts[i+1],dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1;
+  return {x:a[0]+dx*u,y:a[1]+dy*u,ux:dx/len,uy:dy/len};
+}
+function miniRosary(){
+  /* rosario con forma de corazón: medalla en la punta de abajo; 4 cuentas grandes en el lazo y una bajo la medalla
+     (Gloria de una decena + Padre Nuestro de la siguiente); 50 cuentas pequeñas (5 decenas); tira con cuenta grande,
+     3 pequeñas, cuenta grande y crucifijo. Orden de rezo: crucifijo, tira hacia arriba, y el lazo subiendo por la derecha,
+     sobre el lóbulo derecho, el izquierdo y bajando por la izquierda hasta la medalla. */
+  var nx=S.n,g='',rings='',f=function(v){return v.toFixed(1)},H=heartTable(),ty=H.pts[0][1],cx=100;
+  function col(idx){if(idx>=S.n)return '';var o=ownerOf(idx);return o==='x'?' both':(o===S.role?' me':' her')}
+  function ringAt(x,y,r){rings+='<circle class="ring" style="--c:'+(myTurn(nx)?'var(--me)':'var(--her)')+'" cx="'+f(x)+'" cy="'+f(y)+'" r="'+f(r)+'"/>'}
+  function bead(x,y,r,ux,uy,parts){
+    var th=Math.atan2(-ux,uy)*180/Math.PI,n=parts.length,h='',i;
+    if(parts.indexOf(nx)>=0)ringAt(x,y,r+2.6);
+    for(i=0;i<n;i++){
+      if(n===1){h+='<circle class="hb'+col(parts[0])+'" r="'+r+'"/>';break}
+      var a1=(Math.PI+i*2*Math.PI/n),a2=(Math.PI+(i+1)*2*Math.PI/n);
+      h+='<path class="hb'+col(parts[i])+'" d="M0 0L'+f(r*Math.cos(a1))+' '+f(r*Math.sin(a1))+'A'+r+' '+r+' 0 0 1 '+f(r*Math.cos(a2))+' '+f(r*Math.sin(a2))+'Z"/>';
+    }
+    return '<g transform="translate('+f(x)+' '+f(y)+') rotate('+f(th)+')">'+h+'</g>';
+  }
+  function st(d){return SECS[1+d].start}
+  var FE=SECS[6].start;
+  var A=[0,.2,.4,.6,.8,1],i,d;
+  /* hilo del corazón y de la tira */
+  g+='<path d="M'+H.pts.filter(function(_,k){return k%4===0}).map(function(q){return f(q[0])+' '+f(q[1])}).join('L')+'Z" fill="none" stroke="var(--off)" stroke-width="1.2" stroke-linejoin="round"/>';
+  g+='<line x1="'+cx+'" y1="'+f(ty)+'" x2="'+cx+'" y2="'+f(ty+82)+'" stroke="var(--off)" stroke-width="1.2"/>';
+  /* 5 decenas: 10 Ave Marías pequeñas cada una */
+  for(d=0;d<5;d++)for(i=1;i<=10;i++){
+    var P=heartAt(A[d]+(A[d+1]-A[d])*i/11),l=st(d)+2*i;
+    g+=bead(P.x,P.y,3,P.ux,P.uy,[l,l+1]);
+  }
+  /* cuentas grandes del lazo */
+  for(d=0;d<4;d++){var Q=heartAt(A[d+1]);g+=bead(Q.x,Q.y,5.2,Q.ux,Q.uy,[st(d)+22,st(d)+23,st(d+1),st(d+1)+1])}
+  /* tira: cuenta grande bajo la medalla, 3 pequeñas, cuenta grande y crucifijo */
+  g+=bead(cx,ty+16,5.8,0,-1,[6,st(0),st(0)+1,st(4)+22,st(4)+23]);
+  [[28,FE+4],[39,FE+2],[50,FE]].forEach(function(t){g+=bead(cx,ty+t[0],3.2,0,-1,[t[1],t[1]+1])});
+  g+=bead(cx,ty+63,5.6,0,-1,[2,3,4,5]);
+  g+='<rect class="hb'+col(0)+'" x="'+(cx-2)+'" y="'+f(ty+75)+'" width="4" height="30" rx="1.4"/><rect class="hb'+col(1)+'" x="'+(cx-9)+'" y="'+f(ty+83)+'" width="18" height="4" rx="1.4"/>';
+  if(nx===0||nx===1)ringAt(cx,ty+88,15);
+  /* medalla en la punta: Salve, Letanías y cierre */
+  var cl=SECS[SECS.length-1],mp=FE+6,mlen=cl.start+cl.len-mp,frac=Math.max(0,Math.min(mlen,S.n-mp))/mlen,dm='M'+cx+' '+f(ty-8)+'L'+(cx+8)+' '+f(ty)+'L'+cx+' '+f(ty+8)+'L'+(cx-8)+' '+f(ty)+'Z';
+  g+='<path d="'+dm+'" fill="var(--off)"/><path class="hb both" d="'+dm+'" fill-opacity="'+frac.toFixed(2)+'"/>';
+  if(nx>=mp&&nx<TOTAL)ringAt(cx,ty,12);
+  return '<svg viewBox="10 4 180 '+Math.ceil(ty+112)+'" role="img" aria-label="Rosario en forma de corazón: '+Math.round(nx/TOTAL*100)+' por ciento rezado">'+g+rings+'</svg>';
+}
+function miniHtml(){
+  var nx=S.n,pct=Math.round(nx/TOTAL*100),cur;
+  cur=nx>=TOTAL?'Rosario completo':secName(secOf(nx));
+  return miniRosary()+'<div class="mi"><p class="pct">'+pct+'<small>%</small></p><p class="lbl">del rosario rezado</p><p class="now">Ahora: '+esc(cur)+'</p>'
+    +'<div class="key"><span style="--c:var(--me)">Yo</span><span style="--c:var(--her)">'+esc(herName())+'</span><span style="--c:var(--both)">Juntos</span></div>'+artHtml()+'</div>';
+}
+
+
+/* ---------- sala y avisos (servicio público ntfy.sh) ----------
+   Cada movimiento se publica UNA sola vez, en el tema de aviso de la pareja: le llega como notificación a la app ntfy
+   y, si tiene la página abierta, la página lo lee del mismo tema. El estado viaja dentro del enlace de la notificación,
+   así que al tocarla se abre el rosario ya al día. La sala no está escrita en el archivo: se crea y se comparte por enlace. */
+var ROOMKEY='rosario-sala-v2',LASTKEY='rosario-ultimo-v2',DIDKEY='rosario-dispositivo-v1',quiet=false;
+var DID=safe(function(){return localStorage.getItem(DIDKEY)})||'';
+if(!DID){DID=Math.random().toString(36).slice(2,12);safe(function(){localStorage.setItem(DIDKEY,DID)})}
+function validRoom(c){c=String(c||'');var h=c.indexOf('#sala=');if(h>=0)c=c.slice(h+6);c=c.toLowerCase().replace(/[^a-z0-9]/g,'');return c.length>=8&&c.length<=32?c:''}
+var L={room:validRoom(safe(function(){return localStorage.getItem(ROOMKEY)})),es:null,open:false,err:false,retry:null,since:0,sent:0,recv:0,fail:'',seen:{}};
+function loadSince(){var v=safe(function(){return localStorage.getItem(LASTKEY)})||'',p=v.split('|');return p[0]===L.room?(+p[1]||0):0}
+function saveSince(t){if(!(t>L.since))return;L.since=t;safe(function(){localStorage.setItem(LASTKEY,L.room+'|'+t)})}
+L.since=loadSince();
+function newCode(){var a=new Uint8Array(12),al='abcdefghjkmnpqrstuvwxyz23456789',o='',i;safe(function(){crypto.getRandomValues(a)});
+  for(i=0;i<12;i++){if(!a[i])a[i]=Math.floor(Math.random()*256);o+=al[a[i]%al.length]}return o}
+function pageUrl(){return location.href.split('#')[0]}
+function clickBase(){return /^https?:$/.test(location.protocol)?pageUrl():'https://ntfy.sh/'}
+function roomLink(){return pageUrl()+'#sala='+L.room}
+function avisoTopic(w){return 'rosario-de-dos-'+L.room+'-aviso-'+(w==='i'?'1':'2')}
+function dataFrom(url){url=String(url||'');var i=url.indexOf('#rd=');if(i<0)return null;var d=safe(function(){return JSON.parse(decodeURIComponent(url.slice(i+4)))});return d&&typeof d==='object'?d:null}
+function toastMsg(color,inner,ms){var t=$('toast');t.className='toast';t.innerHTML=tcard(color,inner);clearTimeout(toastTimer);if(ms)toastTimer=setTimeout(hideToast,ms)}
+
+/* manda un movimiento: notificación para la pareja + estado para su página */
+function send(ev,text){
+  if(!L.room||!S.who)return Promise.resolve(false);
+  var d={k:Math.random().toString(36).slice(2,10),id:DID,rm:L.room,ev:ev,n:S.n,t:S.t,f:S.me?1:0,r:S.role||'',w:S.who,e:S.e,i:S.int[S.who]};
+  var pr=(S.role&&S.n<TOTAL&&herTurn(S.n))?4:3;
+  var body={topic:avisoTopic(herWho()),title:'Rosario de dos',message:NAME[S.who]+': '+text,priority:pr,tags:['pray'],click:clickBase()+'#rd='+encodeURIComponent(JSON.stringify(d))};
+  return fetch('https://ntfy.sh/',{method:'POST',body:JSON.stringify(body)}).then(function(r){
+    if(r.ok){L.sent++;L.fail=''}else L.fail=r.status===429?'se llegó al límite diario de mensajes de ntfy':'el servicio respondió '+r.status;
+    renderLive();return r.ok;
+  }).catch(function(){L.fail='no salió el mensaje';renderLive();return false});
+}
+function pushTo(w,title,message){safe(function(){fetch('https://ntfy.sh/',{method:'POST',body:JSON.stringify({topic:avisoTopic(w),title:title,message:message,priority:3,tags:['pray']})}).catch(function(){})})}
+function pushIntentions(){
+  var ls=[];if(S.int.i)ls.push('Isaac: '+S.int.i);if(S.int.z)ls.push('Zayra: '+S.int.z);
+  if(!ls.length||!L.room)return;
+  var m='Este rosario se ofrece por:\n'+ls.join('\n');
+  pushTo('i','Rosario de dos',m);pushTo('z','Rosario de dos',m);
+}
+
+/* escucha los dos temas de la sala; con "since" recupera lo que pasó mientras la página estaba cerrada */
+function liveClose(){if(L.es){safe(function(){L.es.close()});L.es=null}L.open=false;clearTimeout(L.retry);L.retry=null}
+function liveConnect(){
+  liveClose();L.err=false;
+  if(!L.room){renderLive();return}
+  var t0=Date.now()/1000,url='https://ntfy.sh/'+avisoTopic('i')+','+avisoTopic('z')+'/sse?since='+(L.since?L.since:'all');
+  try{L.es=new EventSource(url)}catch(e){L.err=true;renderLive();return}
+  L.es.onopen=function(){L.open=true;L.err=false;renderLive()};
+  L.es.onerror=function(){liveClose();L.err=true;renderLive();L.retry=setTimeout(liveConnect,8000)};
+  L.es.onmessage=function(ev){
+    var m=safe(function(){return JSON.parse(ev.data)});if(!m||m.event!=='message')return;
+    if(m.id){if(L.seen[m.id])return;L.seen[m.id]=1}
+    if(m.time)saveSince(m.time);
+    var d=dataFrom(m.click);if(!d||d.id===DID||d.rm!==L.room)return;
+    L.recv++;renderLive();
+    liveReceive(d,!!(m.time&&m.time<t0-5),false);
+  };
+  renderLive();
+}
+/* d = estado de la pareja; old = mensaje de antes de abrir la página (se aplica sin avisos); link = llegó al tocar la notificación */
+var roleWarned=false;
+function liveReceive(d,old,link){
+  var de=+d.e||0;
+  if(de>S.e){doReset(de);if(d.ev==='restart'){if(!old)toastMsg('var(--her)','<b>'+esc(herName())+' empezó de nuevo</b><span>Elijan su parte para comenzar.</span>',6000);return}}
+  else if(de<S.e)return;
+  if((d.w==='i'||d.w==='z')&&!S.who){S.who=d.w==='i'?'z':'i';save();render()}
+  if(d.w&&d.w===S.who&&!roleWarned){roleWarned=true;toastMsg('var(--her)','<b>Los dos eligieron ser '+esc(NAME[S.who])+'</b><span>Uno de los dos debe cambiarlo en Ajustes, en «Quién eres».</span>')}
+  if((d.w==='i'||d.w==='z')&&d.w!==S.who)S.int[d.w]=(typeof d.i==='string')?d.i:null;
+  if(!S.role&&S.who&&(d.r==='a'||d.r==='b')){S.role=d.r==='a'?'b':'a';save();render()}
+  if(!S.role)return;
+  if(d.r&&d.r===S.role){if(!roleWarned){roleWarned=true;toastMsg('var(--her)','<b>Los dos eligieron la misma parte</b><span>Uno de los dos debe cambiarla en Ajustes, en «Tu parte».</span>')}}
+  else if(d.w!==S.who)roleWarned=false;
+  var c={n:d.n|0,t:d.t|0,f:d.f?1:0};
+  if(c.n<0||c.n>TOTAL||c.t<0||c.t>3)return;
+  if(c.n===S.n&&S.n<TOTAL&&PARTS[S.n].o==='x'&&!c.f&&S.her&&d.ev!=='set'){S.her=0;save();render()}
+  quiet=true;
+  try{
+    if(d.ev==='set'){
+      if(c.n===S.n){S.t=c.t;if(S.n<TOTAL&&PARTS[S.n].o==='x')S.her=c.f;save();render();if(!old)showHers(herName()+' ajustó el avance',Math.min(S.n,TOTAL-1))}
+      else if(!link)applyCode(c,true,{live:true,silent:old});
+    }
+    else if(old||d.ev==='who'||d.ev==='role'||d.ev==='tipo')applyCode(c,false,{live:true,silent:true});
+    else applyCode(c,false,{live:true});
+  }finally{quiet=false}
+}
+function renderLive(){
+  var pill=$('live'),st=$('roomstat');
+  if(!pill)return;
+  var has=!!L.room,hn=herName();
+  $('inboxcard').hidden=!!L.open;
+  $('roomcode').hidden=!has;$('roomcode').textContent=has?L.room:'';$('roomtools').hidden=!has;
+  $('roomwa').href='https://wa.me/?text='+encodeURIComponent('Entra a nuestro rosario de dos con este enlace: '+roomLink());
+  pill.hidden=false;
+  if(!has){pill.className='livepill';pill.textContent='Sin sala · créala en Ajustes';
+    st.textContent='Todavía no tienen sala. Uno de los dos la crea y le manda el enlace al otro. Mientras tanto pueden usar los mensajes con código.'}
+  else if(L.open){pill.className='livepill on peer';pill.textContent='Conectado · cada movimiento le llega a '+hn;
+    st.textContent='Conectados a su sala. Cada movimiento le llega a '+hn+' como notificación, tenga o no la página abierta.'}
+  else{pill.className='livepill';pill.textContent=L.err?'Sin conexión · reintentando':'Conectando…';
+    st.textContent=L.err?'No se pudo conectar; se vuelve a intentar solo. Mientras tanto usa los mensajes con código.':'Conectando…'}
+  if(has)st.textContent+=' Diagnóstico: sala …'+L.room.slice(-4)+' · enviados '+L.sent+' · recibidos '+L.recv+(L.fail?' · '+L.fail:'')+'.';
+}
+function setRoom(code){
+  code=validRoom(code);if(!code)return false;
+  L.room=code;L.seen={};L.since=loadSince();safe(function(){localStorage.setItem(ROOMKEY,code)});
+  liveConnect();render();return true;
+}
+function readHash(){
+  var h=location.hash||'';
+  if(h.indexOf('#sala=')===0){var c=validRoom(h);clearHash();if(c&&c!==L.room){setRoom(c);toastMsg('var(--both)','<b>Entraste a la sala</b><span>Ahora elige quién eres y suscríbete a tu tema en ntfy (Ajustes).</span>',6000)}}
+  else if(h.indexOf('#rd=')===0){var d=dataFrom(h);clearHash();if(d&&d.id!==DID&&d.rm===L.room)liveReceive(d,false,true)}
+}
+function clearHash(){safe(function(){history.replaceState(null,'',pageUrl())})}
+function pushText(msg){return String(msg).replace(/^Rosario de dos · /,'').replace(/\s*\[[^\]]*\]\s*$/,'')}
+function announce(ev,title,sub,msg){
+  if(L.room&&S.who){
+    send(ev,pushText(msg)).then(function(ok){
+      if(ok)toastMsg('var(--me)','<b>Enviado</b><span>'+esc(herName())+' recibe la notificación.</span>',2200);
+      else outCard(title,'No se pudo mandar el aviso. '+sub,msg);
+    });
+  }else outCard(title,sub,msg);
+}
+function copyText(txt,okMsg){
+  function fb(){toastMsg('var(--me)','<b>Mantén pulsado y copia</b><textarea class="msg" rows="2" readonly>'+esc(txt)+'</textarea>')}
+  try{navigator.clipboard.writeText(txt).then(function(){toastMsg('var(--me)','<b>'+esc(okMsg)+'</b>',2200)},fb)}catch(e){fb()}
+}
+
+/* ---------- render ---------- */
+function render(){
+  var nx=S.n;
+  var dia=new Date().toLocaleDateString('es-MX',{weekday:'long'});
+  $('eyebrow').textContent=dia.charAt(0).toUpperCase()+dia.slice(1)+' · rosario de dos';
+  $('title').textContent='Misterios '+tipoName();
+  $('roles').hidden=!!(S.role&&S.who);
+  renderRoles();
+
+  $('five').innerHTML=miniHtml();
+
+  var hn=esc(herName());
+  var tm=nx<TOTAL&&S.role&&myTurn(nx),th=nx<TOTAL&&S.role&&herTurn(nx),joint=nx<TOTAL&&ownerOf(nx)==='x';
+  $('people').innerHTML='<div class="person me'+(tm?' turn':'')+'"><b>Yo</b><p>'+(tm?'Te toca':(joint&&S.me?'Ya rezaste':'Esperando'))+'</p></div>'
+    +'<div class="person her'+(th?' turn':'')+'"><b>'+hn+'</b><p>'+(th?'Le toca':(joint&&S.her?'Ya rezó':'Esperando'))+'</p></div>';
+  if(nx>=TOTAL||!S.role)$('people').innerHTML='<div class="person me"><b>Yo</b><p>—</p></div><div class="person her"><b>'+hn+'</b><p>—</p></div>';
+
+  var il=[];if(S.int.i)il.push('Isaac: '+S.int.i);if(S.int.z)il.push('Zayra: '+S.int.z);
+  $('intdet').hidden=!il.length;$('inttxt').textContent='Este rosario se ofrece por:\n'+il.join('\n');
+
+  renderMain();renderSheet();
+}
+function renderRoles(){
+  var b=$('rolebox');if(!b)return;
+  var w=S.who,hn=w?esc(herName()):'mi pareja';
+  var wa='https://wa.me/?text='+encodeURIComponent('Entra a nuestro rosario de dos con este enlace: '+roomLink());
+  var sala=L.room
+    ?'<h3>Sala</h3><p class="note">Sala lista (…'+esc(L.room.slice(-4))+'). Si tu pareja todavía no entra, mándale el enlace.</p>'
+      +'<div class="btns" style="margin-top:8px"><button class="btn" data-act="copylink">Copiar enlace</button><a class="btn" target="_blank" rel="noopener" href="'+esc(wa)+'">Mandar por WhatsApp</a></div>'
+      +(w?'<p class="hint">Para las notificaciones, suscríbete en la app ntfy a: <b style="overflow-wrap:anywhere">'+esc(avisoTopic(w))+'</b> (también está en Ajustes).</p>':'')
+    :'<h3>Sala</h3><p>Uno de los dos crea la sala y le manda el enlace al otro; quien recibe el enlace solo tiene que abrirlo.</p>'
+      +'<div class="btns" style="margin-top:8px"><button class="btn main" data-act="newroom">Crear sala</button></div>'
+      +'<input id="roomin2" type="text" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="o pega aquí el código o enlace de la sala" aria-label="Código o enlace de la sala">'
+      +'<div class="btns"><button class="btn" data-act="join2">Unirme</button></div><p class="hint" id="joinmsg" hidden></p>';
+  b.innerHTML=sala+'<p style="margin-top:14px">Cada quien elige en su celular. Si tu pareja elige una opción, a ti te queda la otra automáticamente.</p>'
+    +'<h3 style="margin-top:14px">¿Quién eres?</h3><div class="chips"><button class="chip" data-act="who" data-v="i" aria-pressed="'+(w==='i')+'">Soy Isaac</button><button class="chip" data-act="who" data-v="z" aria-pressed="'+(w==='z')+'">Soy Zayra</button></div>'
+    +'<h3 style="margin-top:14px">¿Quién empieza el Padre Nuestro?</h3>'
+    +'<div style="display:flex;flex-direction:column;gap:10px"><button class="role" data-act="role" data-v="a"'+(w?'':' disabled')+' aria-pressed="'+(S.role==='a')+'"><b>Yo empiezo</b><span>Parte A · primera parte del Padre Nuestro y cada «Dios te salve».</span></button>'
+    +'<button class="role" data-act="role" data-v="b"'+(w?'':' disabled')+' aria-pressed="'+(S.role==='b')+'"><b>Empieza '+hn+'</b><span>Parte B · segunda parte del Padre Nuestro y cada «Santa María».</span></button></div>'
+    +(w?'':'<p class="hint">Primero elige quién eres.</p>');
+}
+
+function renderMain(){
+  var nx=S.n,go=$('go'),gl=$('golabel'),el=$('main');
+  go.classList.remove('pulse');
+  if(!S.role||!S.who){el.innerHTML='';gl.textContent='Elige quién empieza';go.disabled=true;return}
+  var canUndo=(nx<TOTAL&&PARTS[nx].o==='x'&&!!S.me)||(nx>0&&PARTS[nx-1].o===S.role);
+  var undoBtn=canUndo?'<button class="undo" data-act="undo">Deshacer mi última bolita</button>':'';
+  if(nx>=TOTAL){
+    el.innerHTML='<section class="card"><p class="step">Rosario completo</p><p class="big">Lo rezaron entre los dos</p><p class="prayer">Amén.</p>'+undoBtn+'</section>';
+    gl.textContent='Amén';go.disabled=true;return;
+  }
+  var part=PARTS[nx],s=secOf(nx),o=part.o,mine=myTurn(nx),joint=o==='x',hn=herName(),intent=part.kind==='intent';
+  var mys=s.key==='dec'?ORD[s.d]+' misterio: '+TIPOS[tipoName()][s.d]:secName(s);
+  var body=part.body.map(function(t){return '<p class="prayer'+(part.eq?' eq':'')+'">'+esc(t)+'</p>'}).join('');
+  var who=joint?(S.me?'Ya rezaste, falta '+hn:(S.her?hn+' ya rezó, te toca':'Rezan los dos')):(mine?'Te toca a ti':'Le toca a '+hn);
+  var jn=joint&&!intent?'<p class="note">Esta parte la rezan los dos, completa. Cada quien toca su bolita cuando termine.</p>':'';
+  var keep=intent&&!S.me&&document.activeElement&&document.activeElement.id==='intent';
+  if(intent){
+    var mt=S.int[S.who],ht=S.int[herWho()];
+    body='<p class="prayer">Ofrecemos este rosario por…</p>'
+      +(S.me?'<p class="note">Tu intención: '+esc(mt||'la omitiste')+'</p>'
+        :'<textarea id="intent" rows="3" maxlength="300" placeholder="Yo ofrezco este rosario por…" aria-label="Tu intención">'+esc(draftInt)+'</textarea><div class="btns" style="margin-top:8px"><button class="btn" data-act="skip">Omitir</button></div>')
+      +(S.her?'<p class="note">'+esc(hn)+' ofrece: '+esc(ht||'omitió su intención')+'</p>':'');
+    jn='';
+  }
+  var skipBtn=(!mine||(joint&&S.me&&!S.her))&&!(joint&&!S.me)?'<button class="undo" data-act="skipher">'+esc(hn)+' ya rezó, continuar</button>':'';
+  if(!keep)el.innerHTML='<section class="card '+(joint?'joint':(mine?'mine':'hers'))+'">'+strand(s,nx)
+    +'<div class="legend"><span style="--c:var(--me)">Yo</span><span style="--c:var(--her)">'+esc(hn)+'</span></div>'
+    +'<p class="mys">'+esc(mys)+'</p>'
+    +'<p class="step" style="--c:var('+(mine?'--me':'--her')+')">'+esc(who)+' · '+esc(part.title)+'</p>'+body+jn+skipBtn+undoBtn+'</section>';
+  if(intent){
+    if(mine){gl.textContent='Enviar mi intención';go.disabled=false;go.classList.add('pulse')}
+    else{gl.textContent='Esperando la intención de '+hn;go.disabled=true}
+  }
+  else if(mine){gl.textContent='Ya recé '+part.short;go.disabled=false;go.classList.add('pulse')}
+  else if(joint){gl.textContent='Esperando a que '+hn+' rece '+part.short;go.disabled=true}
+  else{gl.textContent='Espera a que '+hn+' rece '+part.short;go.disabled=true}
+}
+
+function renderSheet(){
+  $('tipos').innerHTML=TORDER.map(function(t,i){return '<button class="chip" data-act="tipo" data-v="'+i+'" aria-pressed="'+(i===S.t)+'">'+t.charAt(0).toUpperCase()+t.slice(1)+'</button>'}).join('');
+  $('whoset').innerHTML=[['i','Soy Isaac'],['z','Soy Zayra']].map(function(r){return '<button class="chip" data-act="who" data-v="'+r[0]+'" aria-pressed="'+(S.who===r[0])+'">'+r[1]+'</button>'}).join('');
+  $('roleset').innerHTML=[['a','Yo empiezo'],['b','Empieza '+herName()]].map(function(r){return '<button class="chip" data-act="role" data-v="'+r[0]+'" aria-pressed="'+(S.role===r[0])+'">'+r[1]+'</button>'}).join('');
+  $('mycode').textContent=code();
+  var av=L.room&&S.who;
+  $('avisocode').textContent=!L.room?'Primero creen la sala o abran su enlace':(S.who?avisoTopic(S.who):'Primero elige quién eres');
+  $('avisolink').href=av?'https://ntfy.sh/'+avisoTopic(S.who):'https://ntfy.sh/';
+  renderLive();
+  var rl=confirmReset?'Confirmar: empezar de nuevo los dos':'Empezar de nuevo los dos';$('reset').textContent=rl;$('reset2').textContent=rl;
+}
+
+/* ---------- mensajes ---------- */
+function messageFor(what){
+  var nx=S.n,line=what;
+  if(nx>=TOTAL)line+=' Rosario completo.';
+  else if(ownerOf(nx)==='x'&&S.me&&!S.her)line+=' Ahora te toca a ti también.';
+  else if(ownerOf(nx)!=='x'&&!myTurn(nx))line+=' Te toca: '+PARTS[nx].title+'.';
+  return 'Rosario de dos · '+line+' ['+code()+']';
+}
+function tcard(color,inner){return '<div class="tcard" style="--c:'+color+'"><div class="orb"></div><div class="tb">'+inner+'</div><button class="x" data-act="toastx" aria-label="Cerrar">×</button></div>'}
+function outCard(title,sub,msg){
+  var t=$('toast');t.className='toast';
+  t.innerHTML=tcard('var(--me)','<b>'+title+'</b><span>'+sub+'</span>'
+    +'<textarea id="outmsg" class="msg" rows="3" readonly aria-label="Mensaje para tu pareja">'+esc(msg)+'</textarea>'
+    +'<div class="btns"><button class="btn main" data-act="copy">Copiar mensaje</button><a class="btn" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent(msg)+'">WhatsApp</a></div><span id="copied" hidden>Copiado. Pégalo en tu chat.</span>');
+  clearTimeout(toastTimer);
+}
+function showHers(title,idx){
+  var s=secOf(Math.max(0,idx)),nx=S.n,t=$('toast');t.className='toast';
+  var where=secWhere(s);
+  var turn=(nx<TOTAL&&myTurn(nx))?'<em>Te toca: '+esc(PARTS[nx].title)+'</em>':'';
+  t.innerHTML=tcard('var(--her)','<b>'+esc(title)+'</b><span>'+esc(where)+'</span>'+turn);
+  safe(function(){navigator.vibrate&&navigator.vibrate([30,60,30])});
+  clearTimeout(toastTimer);toastTimer=setTimeout(hideToast,turn?12000:7000);
+}
+function hideToast(){var t=$('toast');if(!t.firstChild)return;t.className='toast out';setTimeout(function(){t.innerHTML='';t.className='toast'},320)}
+function copyOut(){
+  var ta=$('outmsg');if(!ta)return;
+  function ok(){var c=$('copied');if(c)c.hidden=false}
+  function fb(){ta.focus();ta.select();var c=$('copied');if(c){c.textContent='Mantén pulsado el texto y elige Copiar.';c.hidden=false}}
+  try{navigator.clipboard.writeText(ta.value).then(ok,fb)}catch(e){fb()}
+}
+
+/* ---------- acciones ---------- */
+function mark(skip){
+  if(!S.role||!S.who||S.n>=TOTAL||!myTurn(S.n))return;
+  var part=PARTS[S.n],intent=part.kind==='intent',done=false;
+  if(intent)S.int[S.who]=skip===true?'':String(draftInt||'').trim().slice(0,300);
+  if(part.o==='x'){S.me=1;if(S.her){advance();done=true}}
+  else advance();
+  save();render();
+  if(intent&&done)pushIntentions();
+  announce('mark','Listo. Avísale a tu pareja','Mándale este mensaje para que le llegue tu avance.',messageFor('Ya recé '+part.short+'.'));
+  safe(function(){navigator.vibrate&&navigator.vibrate(12)});
+}
+function skipHer(){
+  if(!S.role||!S.who||S.n>=TOTAL)return;
+  var p=PARTS[S.n],j=p.o==='x';
+  if(j){if(!S.me)return;S.her=1;advance()}
+  else{if(myTurn(S.n))return;advance()}
+  save();render();
+  announce('skip','Avance corregido','Mándale el mensaje para que se ajuste.',messageFor('Avancé el rosario.'));
+}
+function undo(){
+  if(S.n<TOTAL&&PARTS[S.n].o==='x'&&S.me){S.me=0;if(PARTS[S.n].kind==='intent')S.int[S.who]=null;save();render();announce('set','Avance corregido','Mándale el mensaje para que se ajuste.',messageFor('Corregí mi avance.'));return}
+  if(S.n>0){var o=PARTS[S.n-1].o;
+    if(o===S.role){S.n--;S.me=0;S.her=0;save();render();announce('set','Avance corregido','Mándale el mensaje para que se ajuste.',messageFor('Corregí mi avance.'))}}
+}
+function say(txt){var m=$('inmsg');m.hidden=!txt;m.textContent=txt||''}
+function parse(txt){
+  var m=/\[(\d{1,3})-([0-3])-([01])\]/.exec(txt)||/(?:^|\D)(\d{1,3})-([0-3])-([01])(?:\D|$)/.exec(txt);
+  if(!m)return null;var n=+m[1];if(n>TOTAL)return null;return {n:n,t:+m[2],f:+m[3]};
+}
+function sayq(t){if(!quiet)say(t)}
+function applyCode(c,force,opt){
+  opt=opt||{};
+  if(!S.role){sayq('Primero elige quién empieza.');return}
+  if(c.n===S.n){
+    S.t=c.t;
+    if(S.n<TOTAL&&PARTS[S.n].o==='x'&&c.f&&!S.her){
+      S.her=1;
+      if(S.me){var done=PARTS[S.n];advance();save();render();sayq('');$('inbox').value='';
+        announce('mark','Terminaron los dos','Avísale a tu pareja para que continúen.',messageFor('Terminamos '+done.short+'.'));return}
+      save();render();sayq('');$('inbox').value='';
+      if(!opt.silent)showHers(herName()+' rezó '+PARTS[S.n].short,S.n);return;
+    }
+    save();render();sayq('Ya estás al día con tu pareja.');return;
+  }
+  if(c.n<S.n&&!force){
+    if(opt.live)return;
+    pendingCode=c;say('Ese mensaje va en la parte '+c.n+' y tú ya vas en la '+S.n+'. Si tu pareja corrigió su avance, toca «Usar de todos modos».');
+    $('inmsg').insertAdjacentHTML('beforeend',' <button class="btn" data-act="force" type="button">Usar de todos modos</button>');return;
+  }
+  var prev=S.n;S.n=c.n;S.t=c.t;S.me=0;S.her=(c.n<TOTAL&&PARTS[c.n].o==='x'&&c.f)?1:0;pendingCode=null;save();render();sayq('');$('inbox').value='';
+  if(opt.silent)return;
+  if(c.n>prev)showHers(herName()+' rezó '+PARTS[c.n-1].short,c.n-1);
+  else if(opt.live)showHers(herName()+' ajustó el avance',Math.min(c.n,TOTAL-1));
+  else say('Tu avance se ajustó al de tu pareja.');
+}
+
+/* ---------- eventos ---------- */
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-act]');if(!t)return;
+  var a=t.getAttribute('data-act');
+  if(a==='go')mark();
+  else if(a==='undo')undo();
+  else if(a==='copy')copyOut();
+  else if(a==='toastx')hideToast();
+  else if(a==='sheet'){confirmReset=false;renderSheet();$('sheet').hidden=false}
+  else if(a==='close'){$('sheet').hidden=true;confirmReset=false}
+  else if(a==='who'){S.who=t.getAttribute('data-v');save();render();send('who','Ya entré al rosario.')}
+  else if(a==='role'){if(!S.who)return;S.role=t.getAttribute('data-v');save();render();send('role',S.role==='a'?'Yo empiezo el Padre Nuestro.':'Tú empiezas el Padre Nuestro.')}
+  else if(a==='skip')mark(true)
+  else if(a==='skipher')skipHer()
+  else if(a==='tipo'){S.t=+t.getAttribute('data-v');save();render();send('tipo','Cambié a misterios '+tipoName()+'.')}
+  else if(a==='join'||a==='join2'){var inp=$(a==='join'?'roomin':'roomin2'),cd=validRoom(inp&&inp.value);
+    if(!cd){if(a==='join')$('roomstat').textContent='Ese código no es válido. Pega el código o el enlace completo de la sala.';else{var jm=$('joinmsg');if(jm){jm.textContent='Ese código no es válido. Pega el código o el enlace completo de la sala.';jm.hidden=false}}return}
+    if(inp)inp.value='';setRoom(cd);toastMsg('var(--both)','<b>Entraste a la sala</b><span>Suscríbete a tu tema en la app ntfy (está en Ajustes).</span>',5000)}
+  else if(a==='newroom'){setRoom(newCode());toastMsg('var(--both)','<b>Sala creada</b><span>Mándale el enlace a tu pareja para que entre.</span>',5000)}
+  else if(a==='copylink'){if(L.room)copyText(roomLink(),'Enlace copiado')}
+  else if(a==='copyaviso'){if(L.room&&S.who)copyText(avisoTopic(S.who),'Tema copiado')}
+  else if(a==='apply'){var c=parse($('inbox').value);if(c)applyCode(c);else say('No encontré un avance en ese texto. Pega el mensaje completo de tu pareja.')}
+  else if(a==='force'){if(pendingCode)applyCode(pendingCode,true)}
+  else if(a==='reset'){
+    if(!confirmReset){confirmReset=true;renderSheet();return}
+    confirmReset=false;doReset(Math.max(Date.now(),S.e+1));
+    if(L.room&&S.who){send('restart','Empecé de nuevo el rosario. Elige tu parte.');toastMsg('var(--me)','<b>Empezamos de nuevo</b><span>Elige tu parte; '+esc(herName())+' recibirá la otra.</span>',4000)}
+    else toastMsg('var(--me)','<b>Empezaste de nuevo</b><span>Sin sala: pídele a '+esc(herName())+' que también toque «Empezar de nuevo los dos».</span>',6000);
+  }
+});
+$('inbox').addEventListener('input',function(){var v=$('inbox').value,c=parse(v);if(c&&/\[\d{1,3}-[0-3]-[01]\]/.test(v))applyCode(c)});
+document.addEventListener('input',function(e){if(e.target&&e.target.id==='intent')draftInt=e.target.value});
+$('sheet').addEventListener('click',function(e){if(e.target===$('sheet')){$('sheet').hidden=true;confirmReset=false}});
+
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&L.room)liveConnect()});
+window.addEventListener('online',function(){if(L.room)liveConnect()});
+window.addEventListener('hashchange',readHash);
+readHash();render();if(L.room)liveConnect();else renderLive();
+})();
+</script>
+</html>
