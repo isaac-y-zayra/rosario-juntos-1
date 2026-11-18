@@ -1,0 +1,3 @@
+console.log("⚡ Workspace initialized.");
+
+// Write your JavaScript here...
